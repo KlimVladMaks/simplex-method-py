@@ -85,6 +85,19 @@ class SimplexMethod:
             self._dividing_row_in_simplex_table(row_with_min_q_i, self.st[row_with_min_q_i][resolution_column_j])
             self._zero_out_other_items_in_the_column(row_with_min_q_i, resolution_column_j)
     
+        answer = [[0 for _ in range(len(self.st[0]))], None]
+        basis_indexes = self._get_basis_indexes()
+        i = 0
+        for bi in basis_indexes:
+            answer[0][bi] = self.st[i][-1]
+            i += 1
+        f = 0
+        for i in range(len(self.c)):
+            f += self.c[i] * answer[0][i]
+        answer[1] = f
+
+        return answer
+
     def _get_rid_of_negative_free_coefficients(self):
         """
         Избавляется от отрицательных свободных коэффициентов b.
