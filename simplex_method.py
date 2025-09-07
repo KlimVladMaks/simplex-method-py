@@ -56,7 +56,7 @@ class SimplexMethod:
                 break
         
         # Дельты симплекс-таблицы для оптимизации решения
-        self.deltas = [None for _ in range(len(self.st[0]))]
+        self.deltas = [None for _ in range(len(self.st[0]) - 1)]
 
         # Цикл оптимизации с помощью дельт
         while True:
@@ -148,7 +148,7 @@ class SimplexMethod:
 
     def _calculate_deltas(self):
         coeffs = self._get_coefficients_for_deltas()
-        for j in range(len(self.st[0]), -1):
+        for j in range(len(self.st[0]) - 1):
             delta_j = 0
             for i in range(len(self.st)):
                 delta_j += self.st[i][j] * coeffs[i]
