@@ -65,7 +65,7 @@ class SimplexMethod:
 
             # Проверяем решение на оптимальность
             if self._checking_all_deltas(self.obj):
-                return "Решено"
+                break
             
             resolution_column_j = None
             if self.obj == "max":
@@ -147,7 +147,10 @@ class SimplexMethod:
                 row[k] = row[k] - (self.st[i][k] * subtraction_coeff)
 
     def _calculate_deltas(self):
-        coeffs = self._get_coefficients_for_deltas()
+        coeffs_indexes = self._get_basis_indexes()
+        coeffs = []
+        for ci in coeffs_indexes:
+            coeffs.append(self.c[ci])
         for j in range(len(self.st[0]) - 1):
             delta_j = 0
             for i in range(len(self.st)):
@@ -155,7 +158,7 @@ class SimplexMethod:
             delta_j -= self.c[j]
             self.deltas[j] = delta_j
 
-    def _get_coefficients_for_deltas(self):
+    def _get_basis_indexes(self):
         coeffs_indexes = []
         coeffs = []
         for j in range(len(self.st[0])):
@@ -173,9 +176,7 @@ class SimplexMethod:
             if is_only_one_and_zeros and one_count == 1:
                 coeffs_indexes.append(j)
                 if len(coeffs_indexes) == self.basis_size:
-                    for ci in coeffs_indexes:
-                        coeffs.append(self.c[ci])
-                    return coeffs
+                    return coeffs_indexes
 
     def _checking_all_deltas(self, obj):
         for delta in self.deltas:
