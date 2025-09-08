@@ -34,7 +34,11 @@ class SimplexMethod:
             [-4, -3, -2, 1, 0, 0, -33],
             [-3, -2, -1, 0, 1, 0, -23],
             [-1, -1, -2, 0, 0, 1, -12]
-        ],
+        ]
+
+        Примечание:
+
+        В таблице должен быть
         """
         # Коэффициенты целевой функции (coefficients)
         self.c = task_table[0].copy()
@@ -67,14 +71,22 @@ class SimplexMethod:
             if self._checking_all_deltas(self.obj):
                 break
             
+            # Ищем разрешающий столбец
             resolution_column_j = None
+
+            # При заданном условии "max" - ищем столбец с минимальной дельтой
             if self.obj == "max":
                 resolution_column_j = self.deltas.index(min(self.deltas))
+
+            # При заданном условии "min" - ищем столбец с максимальной дельтой
             elif self.obj == "min":
                 resolution_column_j = self.deltas.index(max(self.deltas))
             
+            # Рассчитываем симплекс-отношения Q
             q = self._calculate_simplex_relations_of_q(resolution_column_j)
 
+            # Ищем строку с минимальным Q (разрешающая строка)
+            # (Элемент на пересечении разрешающих столбца и строки также называется разрешающим)
             row_with_min_q_i = None
             q_min = float("inf")
             for i in range(len(q)):
@@ -82,15 +94,21 @@ class SimplexMethod:
                     row_with_min_q_i = i
                     q_min = q[i]
             
+            # Приводим разрешающий элемент к единице, а все остальные элементы в разрешающем столбце к нулю
             self._dividing_row_in_simplex_table(row_with_min_q_i, self.st[row_with_min_q_i][resolution_column_j])
             self._zero_out_other_items_in_the_column(row_with_min_q_i, resolution_column_j)
     
+        # Формируем ответ в виде: [[<Значения x_1, x_2, x_3, ...>], <Значение целевой функции F>]
         answer = [[0 for _ in range(len(self.c))], None]
+
+        # Находим значения переменных x_1, x_2, x_3, ...
         basis_indexes = self._get_basis_indexes()
         i = 0
         for bi in basis_indexes:
             answer[0][bi] = self.st[i][-1]
             i += 1
+        
+        # Находим значение целевой функции F
         f = 0
         for i in range(len(self.c)):
             f += self.c[i] * answer[0][i]
@@ -146,11 +164,17 @@ class SimplexMethod:
         return j_min
     
     def _dividing_row_in_simplex_table(self, row_i, divisor):
+        """
+        Делит строку в таблице на заданное значение.
+        """
         row = self.st[row_i]
         for j in range(len(row)):
             row[j] = row[j] / divisor
 
     def _zero_out_other_items_in_the_column(self, i, j):
+        """
+        Приводит к нулю все элементы столбца кроме заданного.
+        """
         for row_i in range(len(self.st)):
             if row_i == i:
                 continue
@@ -160,6 +184,9 @@ class SimplexMethod:
                 row[k] = row[k] - (self.st[i][k] * subtraction_coeff)
 
     def _calculate_deltas(self):
+        """
+        Рассчитывает дельты для симплекс-таблицы.
+        """
         coeffs_indexes = self._get_basis_indexes()
         coeffs = []
         for ci in coeffs_indexes:
@@ -172,6 +199,9 @@ class SimplexMethod:
             self.deltas[j] = delta_j
 
     def _get_basis_indexes(self):
+        """
+        Возвращает базис симплекс-таблицы.
+        """
         coeffs_indexes = [None for _ in range(len(self.st))]
         for j in range(len(self.st[0])):
             one_i = None
@@ -193,12 +223,18 @@ class SimplexMethod:
                     return coeffs_indexes
 
     def _checking_all_deltas(self, obj):
+        """
+        Проверяет оптимальность решения с помощью дельт.
+        """
         for delta in self.deltas:
             if ((delta > 0) and (obj == "min")) or ((delta < 0) and (obj == "max")):
                 return False
         return True
             
     def _calculate_simplex_relations_of_q(self, j):
+        """
+        Рассчитывает симплекс-отношения Q.
+        """
         q = []
         for i in range(len(self.st)):
             if self.st[i][j] <= 0:
