@@ -4,15 +4,9 @@
 import copy
 
 
-"""
-Заметки:
-- Если какое-либо из значений столбца b отрицательно, то решения задачи не существует.
-"""
-
-
 class SimplexMethod:
 
-    def solve(self, task_table: list[list]):
+    def solve(self, task_table: list[list], precision=8):
         """
         Решает задачу линейного программирование, используя симплекс-метод.
 
@@ -114,7 +108,7 @@ class SimplexMethod:
             f += self.c[i] * answer[0][i]
         answer[1] = f
 
-        return answer
+        return self._round_result(answer, precision)
 
     def _get_rid_of_negative_free_coefficients(self):
         """
@@ -257,3 +251,14 @@ class SimplexMethod:
                         self._zero_out_other_items_in_the_column(i, j)
                         basis[i] = j
                         break
+
+    def _round_result(self, result, precision):
+        """
+        Округляет ответ до заданной точности.
+        """
+        if isinstance(result, list):
+            return [self._round_result(x, precision) for x in result]
+        elif isinstance(result, float):
+            return round(result, precision)
+        else:
+            return result

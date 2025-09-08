@@ -28,3 +28,13 @@ def test_solve_3():
         [4, 6, 8, 0, 1, 200]
     ])
     assert answer == [[35, 10, 0, 140, 0], 190]
+
+def test_solve_4():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [2, 1, -1, 0, 0, "min"],
+        [3, 0, 2, -1, 0, 12],
+        [1, -1, 1, 0, 0, 5],
+        [1, 0, 1, 0, -1, 6]
+    ])
+    assert answer == [[0, 1, 6, 0, 0], -5]
