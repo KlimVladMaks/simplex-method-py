@@ -49,6 +49,10 @@ class SimplexMethod:
         # Размер базиса (число условий)
         self.basis_size = len(self.st)
 
+        # Если в системе нет полного базиса, то формируем его
+        if None in self._get_basis_indexes():
+            self._form_basis()
+
         # Избавляемся от отрицательных свободных коэффициентов
         for row in self.st:
             if row[-1] < 0:
@@ -217,6 +221,7 @@ class SimplexMethod:
                 coeffs_indexes[one_i] = j
                 if None not in coeffs_indexes:
                     return coeffs_indexes
+        return coeffs_indexes
 
     def _checking_all_deltas(self, obj):
         """
@@ -238,3 +243,17 @@ class SimplexMethod:
                 continue
             q.append(self.st[i][-1] / self.st[i][j])
         return q
+
+    def _form_basis(self):
+        """
+        Формирует базис.
+        """
+        basis = self._get_basis_indexes().copy()
+        for i in range(len(basis)):
+            if basis[i] is None:
+                for j in range(len(self.st[0]) - 1):
+                    if self.st[i][j] != 0:
+                        self._dividing_row_in_simplex_table(i, self.st[i][j])
+                        self._zero_out_other_items_in_the_column(i, j)
+                        basis[i] = j
+                        break
