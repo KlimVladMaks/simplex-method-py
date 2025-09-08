@@ -38,3 +38,42 @@ def test_solve_4():
         [1, 0, 1, 0, -1, 6]
     ])
     assert answer == [[0, 1, 6, 0, 0], -5]
+
+def test_solve_5():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [3, -2, 4, 0, "max"],
+        [3, -1, 1, -1, 4],
+        [1, 2, 4, 0, 2]
+    ])
+    assert answer == [[2, 0, 0, 2], 6]
+
+def test_solve_6():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [2, 1, -2, 0, 0, 0, "min"],
+        [1, -5, 0, -3, 0, -1, 25],
+        [0, -16, 0, -7, 1, -3, 57],
+        [0, -6, 1, -2, 0, -1, 17]
+    ])
+    assert answer is None
+
+def test_solve_7():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [20, 20, 10, 0, 0, 0, "min"],
+        [-4, -3, -2, 1, 0, 0, -33],
+        [-3, -2, -1, 0, 1, 0, -23],
+        [-1, -1, -2, 0, 0, 1, -12]
+    ])
+    assert answer == [[7, 0, 5/2, 0, 1/2, 0], 165]
+
+def test_solve_8():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [20, 20, 10, 0, 0, 0, "max"],
+        [-4, -3, -2, 1, 0, 0, -33],
+        [-3, -2, -1, 0, 1, 0, -23],
+        [-1, -1, -2, 0, 0, 1, -12]
+    ])
+    assert answer is None

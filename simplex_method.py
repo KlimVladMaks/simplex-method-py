@@ -50,7 +50,10 @@ class SimplexMethod:
         # Избавляемся от отрицательных свободных коэффициентов
         for row in self.st:
             if row[-1] < 0:
-                self._get_rid_of_negative_free_coefficients()
+                try:
+                    self._get_rid_of_negative_free_coefficients()
+                except:
+                    return
                 break
         
         # Дельты симплекс-таблицы для оптимизации решения
@@ -78,6 +81,10 @@ class SimplexMethod:
             
             # Рассчитываем симплекс-отношения Q
             q = self._calculate_simplex_relations_of_q(resolution_column_j)
+            
+            # Если нет подходящих Q, значит решения не существует
+            if all(x is None for x in q):
+                return
 
             # Ищем строку с минимальным Q (разрешающая строка)
             # (Элемент на пересечении разрешающих столбца и строки также называется разрешающим)
