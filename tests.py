@@ -77,3 +77,53 @@ def test_solve_8():
         [-1, -1, -2, 0, 0, 1, -12]
     ])
     assert answer is None
+
+def test_solve_9():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [3, 2, 1, "max"],
+        [2, 1, 1, 10],
+        [1, 3, 2, 15]
+    ])
+    assert answer == [[3, 4, 0], 17]
+
+def test_solve_10():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [4, 6, 5, 3, "max"],
+        [1, 2, 1, 1, 12],
+        [2, 1, 3, 1, 18]
+    ])
+    assert answer == [[0, 18/5, 24/5, 0], 228/5]
+
+def test_solve_11():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [5, 4, 0, 0, 0, 0, "max"],
+        [2, 1, 1, 0, 0, 0, 12],
+        [1, 2, 0, 1, 0, 0, 14],
+        [1, 0, 0, 0, 1, 0, 6],
+        [0, 1, 0, 0, 0, 1, 5]
+    ])
+    assert answer == [[7/2, 5, 0, 1/2, 5/2, 0], 75/2]
+
+def test_solve_12():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [3, 1, 2, 0, 0, 0, "max"],
+        [1, 1, 1, 1, 0, 0, 10],
+        [2, 0, 1, 0, 1, 0, 8],
+        [0, 1, 3, 0, 0, 1, 15]
+    ])
+    assert answer == [[4, 6, 0, 0, 0, 9], 18]
+
+def test_solve_13():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [7, 6, 5, 4, 0, 0, 0, 0, "max"],
+        [1, 2, 1, 1, 1, 0, 0, 0, 20],
+        [1, 1, 2, 0, 0, 1, 0, 0, 25],
+        [0, 2, 0, 1, 0, 0, 1, 0, 14],
+        [1, 0, 1, 0, 0, 0, 0, 1, 12]
+    ])
+    assert answer == [[12, 0, 0, 8, 0, 13, 6, 0], 116]
