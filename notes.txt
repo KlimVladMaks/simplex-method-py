@@ -1,0 +1,6 @@
+# Работа с .venv:
+source .venv/bin/activate
+deactivate
+
+# Запуск тестов:
+pytest tests.py

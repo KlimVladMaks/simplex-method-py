@@ -127,3 +127,33 @@ def test_solve_13():
         [1, 0, 1, 0, 0, 0, 0, 1, 12]
     ])
     assert answer == [[12, 0, 0, 8, 0, 13, 6, 0], 116]
+
+def test_solve_14():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [-3, -1, -2, 0, 0, 0, "min"],
+        [1, 1, 1, 1, 0, 0, 10],
+        [2, 0, 1, 0, 1, 0, 8],
+        [0, 1, 3, 0, 0, 1, 15]
+    ])
+    assert answer == [[4, 6, 0, 0, 0, 9], -18]
+
+def test_solve_15():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [5, 4, 6, 0, 0, 0, "min"],
+        [1, 1, 1, -1, 0, 0, 10],
+        [1, 0, 0, 0, 1, 0, 5],
+        [2, 1, 3, 0, 0, 1, 20]
+    ])
+    assert answer == [[0, 10, 0, 0, 5, 10], 40]
+
+def test_solve_16():
+    sm = SimplexMethod()
+    answer = sm.solve([
+        [-8, -10, -6, 0, 0, 0, "min"],
+        [2, 3, 1, 1, 0, 0, 20],
+        [1, 2, 3, 0, 1, 0, 15],
+        [1, 1, 1, 0, 0, 1, 10]
+    ])
+    assert answer == [[10, 0, 0, 0, 5, 0], -80]
