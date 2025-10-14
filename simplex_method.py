@@ -1,0 +1,6 @@
+class SimplexMethod:
+    pass
+
+
+
+
