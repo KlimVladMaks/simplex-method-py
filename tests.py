@@ -1,4 +1,4 @@
-from simplex_method import SimplexMethod
+from a_simplex_method import SimplexMethod
 
 def test_solve_1():
     sm = SimplexMethod()
