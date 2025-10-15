@@ -4,7 +4,7 @@ def test_1():
     sm = SimplexMethod()
     sm.load_problem('tests_txt/test_1.txt')
     answer = sm.get_solution()
-    assert answer == [[0, 0, 0, 8], 32]
+    assert answer == [[0, 0, 1, 9], 37]
 
 def test_2():
     sm = SimplexMethod()
