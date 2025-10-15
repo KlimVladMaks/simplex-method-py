@@ -110,14 +110,14 @@ def test_18():
     answer = sm.get_solution()
     assert answer == [[5, 0, 0, 3], 16]
 
-# def test_19():
-#     sm = SimplexMethod()
-#     sm.load_problem('tests_txt/test_19.txt')
-#     answer = sm.get_solution()
-#     assert answer == [[], ]
+def test_19():
+    sm = SimplexMethod()
+    sm.load_problem('tests_txt/test_19.txt')
+    answer = sm.get_solution()
+    assert answer == [[0, 0, 7, 9], 25]
 
-# def test_20():
-#     sm = SimplexMethod()
-#     sm.load_problem('tests_txt/test_20.txt')
-#     answer = sm.get_solution()
-#     assert answer == [[], ]
+def test_20():
+    sm = SimplexMethod()
+    sm.load_problem('tests_txt/test_20.txt')
+    answer = sm.get_solution()
+    assert answer == [[0, 0, 0, 6], 6]
