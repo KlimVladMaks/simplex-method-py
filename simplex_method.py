@@ -98,18 +98,6 @@ class SimplexMethod:
         # Пример преобразования элемента: "-5x4" -> (-5, 4)
         for i in range(len(objective_function)):
             objective_function[i] = parse_coefficient_index(objective_function[i])
-
-        # Получаем число значимых переменных
-        number_of_variables = max(i for _, i in objective_function) + 1
-
-        # Создаём список для коэффициентов целевой функции
-        # (изначально заполняем его нулями)
-        objective_coefficients = [0 for _ in range(number_of_variables)]
-
-        # Заполняем список коэффициентами целевой функции
-        # ci - (coefficient, index)
-        for ci in objective_function:
-            objective_coefficients[ci[1]] = ci[0]
         
         # Список со строками с ограничениями
         constraints = lines[1:]
@@ -133,6 +121,22 @@ class SimplexMethod:
         for c in constraints:
             for i in range(len(c)):
                 c[i] = parse_coefficient_index(c[i])
+
+        # Получаем число значимых переменных
+        # (оно равно наибольшему индексу X, встречающемуся в ЗЛП)
+        number_of_variables = max(i for _, i in objective_function) + 1
+        for c in constraints:
+            c_i_max = max(i for _, i in c) + 1
+            number_of_variables = max(number_of_variables, c_i_max)
+
+        # Создаём список для коэффициентов целевой функции
+        # (изначально заполняем его нулями)
+        objective_coefficients = [0 for _ in range(number_of_variables)]
+
+        # Заполняем список коэффициентами целевой функции
+        # ci - (coefficient, index)
+        for ci in objective_function:
+            objective_coefficients[ci[1]] = ci[0]
         
         # Создаём матрицу с коэффициентами ограничений
         # (изначально заполняем её нулями)
