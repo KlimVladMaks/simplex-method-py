@@ -8,8 +8,35 @@ class SimplexMethod:
     """
     Класс для реализации симплекс-метода для решения задачи линейного программирования (ЗЛП).
     """
+    def __init__(self):
+        """
+        Метод для инициализации класса.
+        """
+        # Список коэффициентов целевой функции
+        self.objective_coefficients: list[int]
+
+        # Направление оптимизации ('max' или 'min')
+        self.objective_sense: str
+
+        # Матрица с коэффициентами ограничений
+        self.constraint_matrix: list[list[int]]
+
+        # Список с типами ограничений ('>=', '<=', '=')
+        self.constraint_senses: list[str]
+
+        # Список с правыми частями ограничений
+        self.constraint_rhs = list[int]
+
+        # Таблица с ЗЛП в каноническом виде (в ограничениях используются только равенства)
+        # Пример:
+        # [20, 20, 10, 0, 0, 0, "max"]
+        # [-4, -3, -2, 1, 0, 0, -33],
+        # [-3, -2, -1, 0, 1, 0, -23],
+        # [-1, -1, -2, 0, 0, 1, -12]
+        self.canonical_problem_table: list[list]
     
-    def load_linear_program(self, file_path: str) -> None:
+
+    def load_problem(self, file_path: str) -> None:
         """
         Метод для загрузки ЗЛП. На вход принимает путь до txt-файла с ЗЛП.
         Пример ожидаемого формата в txt-файле:
@@ -75,11 +102,12 @@ class SimplexMethod:
         # Получаем число значимых переменных
         number_of_variables = max(i for _, i in objective_function) + 1
 
-        # Создаём список для целевых коэффициентов функции
+        # Создаём список для коэффициентов целевой функции
         # (изначально заполняем его нулями)
         objective_coefficients = [0 for _ in range(number_of_variables)]
 
         # Заполняем список коэффициентами целевой функции
+        # ci - (coefficient, index)
         for ci in objective_function:
             objective_coefficients[ci[1]] = ci[0]
         
@@ -105,3 +133,31 @@ class SimplexMethod:
         for c in constraints:
             for i in range(len(c)):
                 c[i] = parse_coefficient_index(c[i])
+        
+        # Создаём матрицу с коэффициентами ограничений
+        # (изначально заполняем её нулями)
+        constraint_matrix = []
+        for _ in range(len(constraints)):
+            constraint_matrix.append([0 for _ in range(number_of_variables)])
+        
+        # Заполняем матрицу с коэффициентами ограничений соответствующими значениями
+        for row_i in range(len(constraints)):
+            for ci in constraints[row_i]:
+                constraint_matrix[row_i][ci[1]] = ci[0]
+        
+        # Загружаем полученные параметры ЗЛП в глобальные переменные класса
+        self.objective_coefficients = objective_coefficients
+        self.objective_sense = objective_sense
+        self.constraint_matrix = constraint_matrix
+        self.constraint_senses = constraint_senses
+        self.constraint_rhs = constraint_rhs
+
+        # Преобразуем параметры ЗЛП к каноническому виду
+        self._convert_problem_to_canonical_form()
+
+        
+    def _convert_problem_to_canonical_form(self):
+        """
+        Преобразует ЗЛП к каноническому виду и записывает в единую таблицу для дальнейшей работы.
+        """
+        pass
