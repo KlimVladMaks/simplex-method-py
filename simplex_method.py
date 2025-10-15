@@ -272,14 +272,22 @@ class SimplexMethod:
 
         # Перебираем все типы ограничений
         for i in range(len(constraint_senses)):
-            # Чтобы преобразовать знак "<=" или ">=" в "=" добавляем в соответствующее ограничение
-            # дополнительную переменную с коэффициентом 1 или -1 соответственно, для всех остальных строк
-            # добавляем эту переменную с коэффициентом 0
+            # Если знак ограничения не равен "=" (т.е. равен "<=" или ">="),
+            # то нужно сделать соответствующее преобразование
             if constraint_senses[i] != "=":
+                # Для знака "<=" добавляем новую переменную с коэффициентом 1
                 if constraint_senses[i] == "<=":
                     constraint_matrix[i].append(1)
+
+                # Для знака ">=" домножаем всё ограничение на -1 (чтобы изменить знак на "<="),
+                # а дальше также добавляем новую переменную с коэффициентом 1
                 elif constraint_senses[i] == ">=":
-                    constraint_matrix[i].append(-1)
+                    for j in range(len(constraint_matrix[i])):
+                        constraint_matrix[i][j] = -constraint_matrix[i][j]
+                    constraint_rhs[i] = -constraint_rhs[i]
+                    constraint_matrix[i].append(1)
+                
+                # Для всех остальных строк добавляем эту новую переменную с коэффициентом 0
                 objective_coefficients.append(0)
                 for j in range(len(constraint_senses)):
                     if j != i:
