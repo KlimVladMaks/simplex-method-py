@@ -250,6 +250,12 @@ class SimplexMethod:
             f += self.c[i] * answer[0][i]
         answer[1] = f
 
+        # Убираем из итогового ответа коэффициенты тех переменных,
+        # которые не входили в изначальную ЗЛП
+        answer[0] = answer[0][:len(self.objective_coefficients)]
+
+        # Возвращаем округлённый ответ
+        # (чтобы избежать погрешностей Python при работе с числами)
         return self._round_result(answer, precision)
        
         
