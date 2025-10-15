@@ -409,7 +409,8 @@ class SimplexMethod:
                     is_only_one_and_zeros = False
                     break
             if is_only_one_and_zeros and one_count == 1:
-                coeffs_indexes[one_i] = j
+                if coeffs_indexes[one_i] is None:
+                    coeffs_indexes[one_i] = j
                 if None not in coeffs_indexes:
                     return coeffs_indexes
         return coeffs_indexes
