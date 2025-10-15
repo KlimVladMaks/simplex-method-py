@@ -160,4 +160,39 @@ class SimplexMethod:
         """
         Преобразует ЗЛП к каноническому виду и записывает в единую таблицу для дальнейшей работы.
         """
-        pass
+        # Создаём локальные копии параметров ЗЛП
+        objective_coefficients = self.objective_coefficients.copy()
+        objective_sense = self.objective_sense
+        constraint_matrix = [row.copy() for row in self.constraint_matrix]
+        constraint_senses = self.constraint_senses.copy()
+        constraint_rhs = self.constraint_rhs.copy()
+
+        # Перебираем все типы ограничений
+        for i in range(len(constraint_senses)):
+            # Чтобы преобразовать знак "<=" или ">=" в "=" добавляем в соответствующее ограничение
+            # дополнительную переменную с коэффициентом 1 или -1 соответственно, для всех остальных строк
+            # добавляем эту переменную с коэффициентом 0
+            if constraint_senses[i] != "=":
+                if constraint_senses[i] == "<=":
+                    constraint_matrix[i].append(1)
+                elif constraint_senses[i] == ">=":
+                    constraint_matrix[i].append(-1)
+                objective_coefficients.append(0)
+                for j in range(len(constraint_senses)):
+                    if j != i:
+                        constraint_matrix[j].append(0)
+        
+        # Единая таблица для канонической формы ЗЛП
+        canonical_problem_table = []
+
+        # Добавляем в таблицу коэффициенты целевой функции и направление оптимизации 
+        canonical_problem_table.append(objective_coefficients)
+        canonical_problem_table[0].append(objective_sense)
+
+        # Добавляем в таблицу коэффициенты и правую часть ограничений
+        for i in range(len(constraint_matrix)):
+            canonical_problem_table.append(constraint_matrix[i])
+            canonical_problem_table[i + 1].append(constraint_rhs[i])
+
+        # Сохраняем таблицу в глобальную переменную класса
+        self.canonical_problem_table = canonical_problem_table
