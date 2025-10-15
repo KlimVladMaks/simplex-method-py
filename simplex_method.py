@@ -34,7 +34,7 @@ class SimplexMethod:
         # [-3, -2, -1, 0, 1, 0, -23],
         # [-1, -1, -2, 0, 0, 1, -12]
         self.canonical_problem_table: list[list]
-    
+
 
     def load_problem(self, file_path: str) -> None:
         """
@@ -156,6 +156,9 @@ class SimplexMethod:
         self.constraint_senses = constraint_senses
         self.constraint_rhs = constraint_rhs
 
+        # Создаём глобальную переменную для хранения базиса симплекс-таблицы
+        self.basis_indexes = [None for _ in range(len(constraint_matrix))]
+
         # Преобразуем параметры ЗЛП к каноническому виду
         self._convert_problem_to_canonical_form()
 
@@ -175,11 +178,8 @@ class SimplexMethod:
         # Симплекс-таблица (simplex table)
         self.st = [row.copy() for row in self.canonical_problem_table[1:]]
 
-        # Размер базиса (число условий)
-        self.basis_size = len(self.st)
-
         # Если в системе нет полного базиса, то формируем его
-        if None in self._get_basis_indexes():
+        if None in self.basis_indexes:
             self._form_basis()
 
         # Избавляемся от отрицательных свободных коэффициентов
@@ -233,14 +233,16 @@ class SimplexMethod:
             # Приводим разрешающий элемент к единице, а все остальные элементы в разрешающем столбце к нулю
             self._dividing_row_in_simplex_table(row_with_min_q_i, self.st[row_with_min_q_i][resolution_column_j])
             self._zero_out_other_items_in_the_column(row_with_min_q_i, resolution_column_j)
+
+            # Обновляем базис
+            self.basis_indexes[row_with_min_q_i] = resolution_column_j
     
         # Формируем ответ в виде: [[<Значения x_1, x_2, x_3, ...>], <Значение целевой функции F>]
         answer = [[0 for _ in range(len(self.c))], None]
 
         # Находим значения переменных x_1, x_2, x_3, ...
-        basis_indexes = self._get_basis_indexes()
         i = 0
-        for bi in basis_indexes:
+        for bi in self.basis_indexes:
             answer[0][bi] = self.st[i][-1]
             i += 1
         
@@ -292,6 +294,10 @@ class SimplexMethod:
                 for j in range(len(constraint_senses)):
                     if j != i:
                         constraint_matrix[j].append(0)
+
+                # Также указываем новую переменную как базисную 
+                # для соответствующей строки симплекс-таблицы
+                self.basis_indexes[i] = len(constraint_matrix[i]) - 1
         
         # Единая таблица для канонической формы ЗЛП
         canonical_problem_table = []
@@ -330,6 +336,9 @@ class SimplexMethod:
 
             # Обнуляем все другие элементы в этом столбце
             self._zero_out_other_items_in_the_column(i_min, j_min)
+
+            # Обновляем базис
+            self.basis_indexes[i_min] = j_min
 
 
     def _find_row_with_smallest_negative_b(self):
@@ -385,43 +394,15 @@ class SimplexMethod:
         """
         Рассчитывает дельты для симплекс-таблицы.
         """
-        coeffs_indexes = self._get_basis_indexes()
         coeffs = []
-        for ci in coeffs_indexes:
-            coeffs.append(self.c[ci])
+        for bi in self.basis_indexes:
+            coeffs.append(self.c[bi])
         for j in range(len(self.st[0]) - 1):
             delta_j = 0
             for i in range(len(self.st)):
                 delta_j += self.st[i][j] * coeffs[i]
             delta_j -= self.c[j]
             self.deltas[j] = delta_j
-
-
-    def _get_basis_indexes(self):
-        """
-        Возвращает базис симплекс-таблицы.
-        """
-        coeffs_indexes = [None for _ in range(len(self.st))]
-        for j in range(len(self.st[0])):
-            one_i = None
-            one_count = 0
-            is_only_one_and_zeros = True
-            for i in range(len(self.st)):
-                if self.st[i][j] == 1:
-                    one_i = i
-                    one_count += 1
-                    if one_count > 1:
-                        is_only_one_and_zeros = False
-                        break
-                elif self.st[i][j] != 0:
-                    is_only_one_and_zeros = False
-                    break
-            if is_only_one_and_zeros and one_count == 1:
-                if coeffs_indexes[one_i] is None:
-                    coeffs_indexes[one_i] = j
-                if None not in coeffs_indexes:
-                    return coeffs_indexes
-        return coeffs_indexes
 
 
     def _checking_all_deltas(self, obj):
@@ -451,14 +432,13 @@ class SimplexMethod:
         """
         Формирует базис.
         """
-        basis = self._get_basis_indexes().copy()
-        for i in range(len(basis)):
-            if basis[i] is None:
+        for i in range(len(self.basis_indexes)):
+            if self.basis_indexes[i] is None:
                 for j in range(len(self.st[0]) - 1):
                     if self.st[i][j] != 0:
                         self._dividing_row_in_simplex_table(i, self.st[i][j])
                         self._zero_out_other_items_in_the_column(i, j)
-                        basis[i] = j
+                        self.basis_indexes[i] = j
                         break
 
 
