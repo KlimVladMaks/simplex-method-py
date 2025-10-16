@@ -121,3 +121,33 @@ def test_20():
     sm.load_problem('tests_txt/test_20.txt')
     answer = sm.get_solution()
     assert answer == [[0, 0, 0, 6], 6]
+
+def test_21():
+    sm = SimplexMethod()
+    sm.load_problem('tests_txt/test_21.txt')
+    answer = sm.get_solution()
+    assert answer == [[3, 4, 0], 17]
+
+def test_22():
+    sm = SimplexMethod()
+    sm.load_problem('tests_txt/test_22.txt')
+    answer = sm.get_solution()
+    assert answer == [[0, 18/5, 24/5, 0], 228/5]
+
+def test_23():
+    sm = SimplexMethod()
+    sm.load_problem('tests_txt/test_23.txt')
+    answer = sm.get_solution()
+    assert answer == [[7/2, 5], 75/2]
+
+def test_24():
+    sm = SimplexMethod()
+    sm.load_problem('tests_txt/test_24.txt')
+    answer = sm.get_solution()
+    assert answer == [[4, 6, 0], 18]
+
+def test_25():
+    sm = SimplexMethod()
+    sm.load_problem('tests_txt/test_25.txt')
+    answer = sm.get_solution()
+    assert answer == [[12, 0, 0, 8], 116]
